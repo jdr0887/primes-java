@@ -1,24 +1,34 @@
 package com.kiluet.sieve;
 
-import org.apache.commons.lang.time.DurationFormatUtils;
+import org.apache.commons.lang3.time.DurationFormatUtils;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Arrays;
-import java.util.TreeSet;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class SieveOfAtkinSerial implements Runnable {
 
-    private static final Logger logger = Logger.getLogger(SieveOfAtkinSerial.class.getName());
+    private static Logger logger = null;
+
+    static {
+        try {
+            InputStream stream = SieveOfAtkinSerial.class.getClassLoader().
+                    getResourceAsStream("logging.properties");
+            java.util.logging.LogManager.getLogManager().readConfiguration(stream);
+            logger = Logger.getLogger(SieveOfAtkinSerial.class.getName());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     private final Integer ceiling;
 
     public SieveOfAtkinSerial(final Integer ceiling) {
         super();
         this.ceiling = ceiling;
-        Logger.getLogger("").setLevel(Level.INFO);
     }
 
     @Override
@@ -70,13 +80,18 @@ public class SieveOfAtkinSerial implements Runnable {
     }
 
     public static void main(String[] args) {
+        int ceiling = 1_000_000_000;
+        if (args.length > 0) {
+            ceiling = Integer.parseInt(args[0]);
+        }
+        logger.info(String.format("ceiling: %s", ceiling));
         Instant start = Instant.now();
-        SieveOfAtkinSerial runnable = new SieveOfAtkinSerial(100_000_000);
+        SieveOfAtkinSerial runnable = new SieveOfAtkinSerial(ceiling);
         runnable.run();
         Instant end = Instant.now();
         Duration duration = Duration.between(start, end);
         long millis = duration.toMillis();
-        logger.info(DurationFormatUtils.formatDurationHMS(millis));
+        logger.info(String.format("Duration: %s", DurationFormatUtils.formatDurationHMS(millis)));
     }
 
 }

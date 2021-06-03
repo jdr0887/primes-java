@@ -1,7 +1,9 @@
 package com.kiluet.sieve;
 
-import org.apache.commons.lang.time.DurationFormatUtils;
+import org.apache.commons.lang3.time.DurationFormatUtils;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Arrays;
@@ -11,14 +13,24 @@ import java.util.logging.Logger;
 
 public class SieveOfSundaramSerial implements Runnable {
 
-    private static final Logger logger = Logger.getLogger(SieveOfSundaramSerial.class.getName());
+    private static Logger logger = null;
+
+    static {
+        try {
+            InputStream stream = SieveOfSundaramSerial.class.getClassLoader().
+                    getResourceAsStream("logging.properties");
+            java.util.logging.LogManager.getLogManager().readConfiguration(stream);
+            logger = Logger.getLogger(SieveOfSundaramSerial.class.getName());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     private final Integer ceiling;
 
     public SieveOfSundaramSerial(final Integer ceiling) {
         super();
         this.ceiling = ceiling;
-        Logger.getLogger("").setLevel(Level.INFO);
     }
 
     @Override
@@ -50,13 +62,18 @@ public class SieveOfSundaramSerial implements Runnable {
     }
 
     public static void main(String[] args) {
+        int ceiling = 1_000_000_000;
+        if (args.length > 0) {
+            ceiling = Integer.parseInt(args[0]);
+        }
+        logger.info(String.format("ceiling: %s", ceiling));
         Instant start = Instant.now();
-        SieveOfSundaramSerial runnable = new SieveOfSundaramSerial(100_000_000);
+        SieveOfSundaramSerial runnable = new SieveOfSundaramSerial(ceiling);
         runnable.run();
         Instant end = Instant.now();
         Duration duration = Duration.between(start, end);
         long millis = duration.toMillis();
-        logger.info(DurationFormatUtils.formatDurationHMS(millis));
+        logger.info(String.format("Duration: %s", DurationFormatUtils.formatDurationHMS(millis)));
     }
 
 }
