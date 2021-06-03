@@ -5,6 +5,7 @@ import java.time.Instant;
 import java.util.Arrays;
 import java.util.TreeSet;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 public class SieveOfSundaramSerial implements Runnable {
 
@@ -24,26 +25,26 @@ public class SieveOfSundaramSerial implements Runnable {
     public void run() {
         Arrays.fill(primeArray, true);
         int n = ceiling / 2;
-        for (int i = 1; i < n; i++) {
-            for (int j = i; j <= (n - i) / (2 * i + 1); j++) {
-                primeArray[i + j + 2 * i * j] = false;
+        for (int x = 1; x < n; x++) {
+            for (int y = x; y <= (n - x) / (2 * x + 1); y++) {
+                primeArray[x + y + 2 * x * y] = false;
             }
         }
 
         TreeSet<Integer> primes = new TreeSet<>();
-        for (int i = 0; i <= ceiling; i++) {
+        for (int i = 0; i < ceiling; i++) {
             if (primeArray[i]) {
                 primes.add(i);
             }
         }
 
-//        logger.info(String.format("ceiling: %s, primes: %s", ceiling, primes.stream().map(String::valueOf).collect(Collectors.joining(","))));
+       logger.info(String.format("ceiling: %s, primes: %s", ceiling, primes.stream().map(String::valueOf).collect(Collectors.joining(","))));
 
     }
 
     public static void main(String[] args) {
         Instant start = Instant.now();
-        SieveOfSundaramSerial runnable = new SieveOfSundaramSerial(1_000_000_000);
+        SieveOfSundaramSerial runnable = new SieveOfSundaramSerial(10);
         runnable.run();
         Instant end = Instant.now();
         Duration duration = Duration.between(start, end);

@@ -4,6 +4,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.TreeSet;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -19,6 +20,7 @@ public class SieveOfAtkinSerial implements Runnable {
         super();
         this.ceiling = ceiling;
         primeArray = new boolean[ceiling + 1];
+        Logger.getLogger("").setLevel(Level.INFO);
     }
 
     @Override
@@ -65,7 +67,7 @@ public class SieveOfAtkinSerial implements Runnable {
             }
         }
 
-//        logger.info(String.format("ceiling: %s, primes: %s", ceiling, primes.stream().map(String::valueOf).collect(Collectors.joining(","))));
+        logger.fine(String.format("ceiling: %s, primes: %s", ceiling, primes.stream().map(String::valueOf).collect(Collectors.joining(","))));
 
     }
 

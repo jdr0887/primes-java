@@ -1,16 +1,16 @@
 package com.kiluet.sieve;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
+import java.io.*;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.*;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.RecursiveTask;
+import java.util.logging.Logger;
 
 public class SieveOfEratosthenesParallel implements Runnable {
+
+    private static final Logger logger = Logger.getLogger(SieveOfEratosthenesParallel.class.getName());
 
     private static final ForkJoinPool forkJoinPool = new ForkJoinPool();
 
@@ -26,40 +26,22 @@ public class SieveOfEratosthenesParallel implements Runnable {
 
     @Override
     public void run() {
-        System.out.println(String.format("ceiling = %d", ceiling));
         Arrays.fill(primeArray, true);
-        long startTime = System.currentTimeMillis();
         forkJoinPool.invoke(new OuterTask());
-        long endTime = System.currentTimeMillis();
-        System.out.println(String.format("duration to calculate = %d milliseconds", endTime - startTime));
-        startTime = System.currentTimeMillis();
-        BufferedWriter bw = null;
-        try {
-            bw = new BufferedWriter(new FileWriter(new File("/tmp/soe.parallel.txt")));
-            for (int i = 2; i <= ceiling; i++) {
-                if (primeArray[i]) {
-                    bw.write(String.format("%d%n", i));
-                    bw.flush();
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (bw != null) {
-                try {
-                    bw.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+        Set<Integer> primes = new TreeSet<Integer>();
+        for (int i = 0; i <= ceiling; i++) {
+            if (primeArray[i]) {
+                primes.add(i);
             }
         }
-        endTime = System.currentTimeMillis();
-        System.out.println(String.format("duration to write to disk = %d milliseconds", endTime - startTime));
+
+        //logger.info(String.format("ceiling: %s, primes: %s", ceiling, primes.stream().map(String::valueOf).collect(Collectors.joining(","))));
 
     }
 
     class OuterTask extends RecursiveTask<Void> {
 
+        @Serial
         private static final long serialVersionUID = -5582589149573253752L;
 
         @Override
@@ -83,6 +65,7 @@ public class SieveOfEratosthenesParallel implements Runnable {
 
     class InnerTask extends RecursiveTask<Void> {
 
+        @Serial
         private static final long serialVersionUID = -7928670821687785005L;
 
         private Integer divisor;
@@ -107,8 +90,14 @@ public class SieveOfEratosthenesParallel implements Runnable {
     }
 
     public static void main(String[] args) {
+        Instant start = Instant.now();
         SieveOfEratosthenesParallel runnable = new SieveOfEratosthenesParallel(1000000000);
         runnable.run();
+        Instant end = Instant.now();
+        Duration duration = Duration.between(start, end);
+        long seconds = duration.getSeconds();
+        logger.info(String.format("duration: %d:%02d:%02d", seconds / 3600, (seconds % 3600) / 60, seconds % 60));
+
     }
 
 }

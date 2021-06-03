@@ -4,7 +4,9 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.TreeSet;
+import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 public class SieveOfEratosthenesSerial implements Runnable {
 
@@ -18,6 +20,7 @@ public class SieveOfEratosthenesSerial implements Runnable {
         super();
         this.ceiling = ceiling;
         primeArray = new boolean[ceiling + 1];
+        Logger.getLogger("").setLevel(Level.INFO);
     }
 
     @Override
@@ -38,7 +41,7 @@ public class SieveOfEratosthenesSerial implements Runnable {
             }
         }
 
-//        logger.info(String.format("ceiling: %s, primes: %s", ceiling, primes.stream().map(String::valueOf).collect(Collectors.joining(","))));
+        logger.fine(String.format("ceiling: %s, primes: %s", ceiling, primes.stream().map(String::valueOf).collect(Collectors.joining(","))));
 
     }
 
@@ -49,6 +52,7 @@ public class SieveOfEratosthenesSerial implements Runnable {
         Instant end = Instant.now();
         Duration duration = Duration.between(start, end);
         long seconds = duration.getSeconds();
+
         logger.info(String.format("duration: %d:%02d:%02d", seconds / 3600, (seconds % 3600) / 60, seconds % 60));
     }
 
