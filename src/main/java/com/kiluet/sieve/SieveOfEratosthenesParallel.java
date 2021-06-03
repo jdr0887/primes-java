@@ -1,5 +1,7 @@
 package com.kiluet.sieve;
 
+import org.apache.commons.lang.time.DurationFormatUtils;
+
 import java.io.*;
 import java.time.Duration;
 import java.time.Instant;
@@ -95,9 +97,8 @@ public class SieveOfEratosthenesParallel implements Runnable {
         runnable.run();
         Instant end = Instant.now();
         Duration duration = Duration.between(start, end);
-        long seconds = duration.getSeconds();
-        logger.info(String.format("duration: %d:%02d:%02d", seconds / 3600, (seconds % 3600) / 60, seconds % 60));
-
+        long millis = duration.toMillis();
+        logger.info(DurationFormatUtils.formatDurationHMS(millis));
     }
 
 }

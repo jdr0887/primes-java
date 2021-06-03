@@ -1,16 +1,21 @@
 package com.kiluet.sieve;
 
+import org.apache.commons.lang.time.DurationFormatUtils;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.*;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.RecursiveTask;
+import java.util.logging.Logger;
 
 public class SieveOfSundaramParallel implements Runnable {
+
+    private static final Logger logger = Logger.getLogger(SieveOfEratosthenesSerial.class.getName());
 
     private static final ForkJoinPool forkJoinPool = new ForkJoinPool();
 
@@ -26,38 +31,16 @@ public class SieveOfSundaramParallel implements Runnable {
 
     @Override
     public void run() {
-        System.out.println(String.format("ceiling = %d", ceiling));
         Arrays.fill(primeArray, true);
-        long startTime = System.currentTimeMillis();
         forkJoinPool.invoke(new OuterTask());
-        long endTime = System.currentTimeMillis();
-        System.out.println(String.format("duration to calculate = %d milliseconds", endTime - startTime));
-        startTime = System.currentTimeMillis();
-        BufferedWriter bw = null;
-
-        try {
-            bw = new BufferedWriter(new FileWriter(new File("/tmp/sos.parallel.txt")));
-            bw.write("2 3 ");
-            for (int i = 2; i < primeArray.length / 2; i++) {
-                if (primeArray[i]) {
-                    bw.write(String.format("%d%n", (2 * i + 1)));
-                    bw.flush();
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (bw != null) {
-                try {
-                    bw.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+        Set<Integer> primes = new TreeSet<Integer>();
+        for (int i = 0; i <= ceiling; i++) {
+            if (primeArray[i]) {
+                primes.add(i);
             }
         }
-        endTime = System.currentTimeMillis();
-        System.out.println(String.format("duration to write to disk = %d milliseconds", endTime - startTime));
 
+        //logger.info(String.format("ceiling: %s, primes: %s", ceiling, primes.stream().map(String::valueOf).collect(Collectors.joining(","))));
     }
 
     class OuterTask extends RecursiveTask<Void> {
@@ -109,8 +92,13 @@ public class SieveOfSundaramParallel implements Runnable {
     }
 
     public static void main(String[] args) {
+        Instant start = Instant.now();
         SieveOfSundaramParallel runnable = new SieveOfSundaramParallel(100000000);
         runnable.run();
+        Instant end = Instant.now();
+        Duration duration = Duration.between(start, end);
+        long millis = duration.toMillis();
+        logger.info(DurationFormatUtils.formatDurationHMS(millis));
     }
 
 }
