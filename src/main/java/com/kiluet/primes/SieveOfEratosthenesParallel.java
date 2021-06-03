@@ -1,4 +1,4 @@
-package com.kiluet.sieve;
+package com.kiluet.primes;
 
 import org.apache.commons.lang3.time.DurationFormatUtils;
 

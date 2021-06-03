@@ -1,4 +1,4 @@
-package com.kiluet.sieve;
+package com.kiluet.primes;
 
 import org.apache.commons.lang3.time.DurationFormatUtils;
 
@@ -7,8 +7,6 @@ import java.io.InputStream;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Arrays;
-import java.util.TreeSet;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class SieveOfEratosthenesSerial implements Runnable {
