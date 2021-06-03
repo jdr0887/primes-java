@@ -10,7 +10,6 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.RecursiveTask;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 public class SieveOfAtkinParallel implements Callable<Void> {
 
@@ -44,7 +43,7 @@ public class SieveOfAtkinParallel implements Callable<Void> {
             }
         }
 
-        //logger.info(String.format("ceiling: %s, primes: %s", ceiling, primes.stream().map(String::valueOf).collect(Collectors.joining(","))));
+        //logger.info(String.format("ceiling: %s, primes: %s", ceiling, primes.stream().map(String::valueOf).collect(java.util.stream.Collectors.joining(","))));
 
         return null;
     }
@@ -121,7 +120,7 @@ public class SieveOfAtkinParallel implements Callable<Void> {
 
     public static void main(String[] args) {
         Instant start = Instant.now();
-        SieveOfAtkinParallel runnable = new SieveOfAtkinParallel(1_000_000_000);
+        SieveOfAtkinParallel runnable = new SieveOfAtkinParallel(100_000_000);
         runnable.call();
         Instant end = Instant.now();
         Duration duration = Duration.between(start, end);

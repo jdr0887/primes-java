@@ -4,30 +4,26 @@ import org.apache.commons.lang.time.DurationFormatUtils;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.time.temporal.TemporalUnit;
 import java.util.Arrays;
 import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 public class SieveOfAtkinSerial implements Runnable {
 
     private static final Logger logger = Logger.getLogger(SieveOfAtkinSerial.class.getName());
-
-    private final boolean[] primeArray;
 
     private final Integer ceiling;
 
     public SieveOfAtkinSerial(final Integer ceiling) {
         super();
         this.ceiling = ceiling;
-        primeArray = new boolean[ceiling + 1];
         Logger.getLogger("").setLevel(Level.INFO);
     }
 
     @Override
     public void run() {
+        boolean[] primeArray = new boolean[ceiling + 1];
         Arrays.fill(primeArray, false);
 
         primeArray[0] = false;
@@ -63,15 +59,14 @@ public class SieveOfAtkinSerial implements Runnable {
             }
         }
 
-        TreeSet<Integer> primes = new TreeSet<>();
-        for (int i = 0; i <= ceiling; i++) {
-            if (primeArray[i]) {
-                primes.add(i);
-            }
-        }
+//        TreeSet<Integer> primes = new TreeSet<>();
+//        for (int i = 0; i <= ceiling; i++) {
+//            if (primeArray[i]) {
+//                primes.add(i);
+//            }
+//        }
 
-        logger.fine(String.format("ceiling: %s, primes: %s", ceiling, primes.stream().map(String::valueOf).collect(Collectors.joining(","))));
-
+        //logger.info(String.format("ceiling: %s, primes: %s", ceiling, primes.stream().map(String::valueOf).collect(java.util.stream.Collectors.joining(","))));
     }
 
     public static void main(String[] args) {

@@ -2,10 +2,7 @@ package com.kiluet.sieve;
 
 import org.apache.commons.lang.time.DurationFormatUtils;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
@@ -33,6 +30,7 @@ public class SieveOfSundaramParallel implements Runnable {
     public void run() {
         Arrays.fill(primeArray, true);
         forkJoinPool.invoke(new OuterTask());
+
         Set<Integer> primes = new TreeSet<Integer>();
         for (int i = 0; i <= ceiling; i++) {
             if (primeArray[i]) {
@@ -45,6 +43,7 @@ public class SieveOfSundaramParallel implements Runnable {
 
     class OuterTask extends RecursiveTask<Void> {
 
+        @Serial
         private static final long serialVersionUID = -5582589149573253752L;
 
         @Override
@@ -69,6 +68,7 @@ public class SieveOfSundaramParallel implements Runnable {
 
     class InnerTask extends RecursiveTask<Void> {
 
+        @Serial
         private static final long serialVersionUID = -7928670821687785005L;
 
         private Integer divisor;
@@ -93,7 +93,7 @@ public class SieveOfSundaramParallel implements Runnable {
 
     public static void main(String[] args) {
         Instant start = Instant.now();
-        SieveOfSundaramParallel runnable = new SieveOfSundaramParallel(100000000);
+        SieveOfSundaramParallel runnable = new SieveOfSundaramParallel(100_000_000);
         runnable.run();
         Instant end = Instant.now();
         Duration duration = Duration.between(start, end);

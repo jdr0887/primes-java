@@ -2,7 +2,7 @@ package com.kiluet.sieve;
 
 import org.apache.commons.lang.time.DurationFormatUtils;
 
-import java.io.*;
+import java.io.Serial;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
@@ -37,7 +37,7 @@ public class SieveOfEratosthenesParallel implements Runnable {
             }
         }
 
-        //logger.info(String.format("ceiling: %s, primes: %s", ceiling, primes.stream().map(String::valueOf).collect(Collectors.joining(","))));
+        //logger.info(String.format("ceiling: %s, primes: %s", ceiling, primes.stream().map(String::valueOf).collect(java.util.stream.Collectors.joining(","))));
 
     }
 
@@ -93,7 +93,7 @@ public class SieveOfEratosthenesParallel implements Runnable {
 
     public static void main(String[] args) {
         Instant start = Instant.now();
-        SieveOfEratosthenesParallel runnable = new SieveOfEratosthenesParallel(1000000000);
+        SieveOfEratosthenesParallel runnable = new SieveOfEratosthenesParallel(100_000_000);
         runnable.run();
         Instant end = Instant.now();
         Duration duration = Duration.between(start, end);
